@@ -30,14 +30,24 @@ def monitor
 
     output_file.write [Time.now.to_f].pack('e')
 
+    packet = nil
+
     if internet_out
       output_file.write [-1].pack('e')
+      packet = { internet_status: 'offline' }
     elsif line =~ /\d+ bytes from 8\.8\.8\.8: icmp_seq=\d+ ttl=\d+ time=(\d+(\.\d+)?) ms/
       latency = line.match(/time=(\d+(\.\d+)?) ms/)[1].to_f
       output_file.write [latency].pack('e')
+
+      if latency < 100
+        packet = { internet_status: 'online', latency: latency }
+      else
+        packet = { internet_status: 'degraded', latency: latency }
+      end
     end
 
     output_file.flush
+    yield packet if block_given? && !packet.nil?
   end
 end
 
