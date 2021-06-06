@@ -18,6 +18,11 @@ end
 def monitor
   output_file = File.open('data/internet_status.bin', 'a+b')
 
+  File.open('data/internet_status_index.bin', 'a+b') do |index_file|
+    index_file.write [Time.now.to_f].pack('e')
+    index_file.write [File.size('data/internet_status.bin')].pack('L<')
+  end
+
   each_output 'ping 8.8.8.8' do |line|
     puts line
 
