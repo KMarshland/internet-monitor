@@ -9,12 +9,11 @@ $socket_lock = Mutex.new
 
 class App < Sinatra::Base
   set :public_folder, 'build'
+  set :server, 'thin'
 
   get '/' do
-    send_file File.join('build', 'index.html')
-  end
+    next send_file File.join('build', 'index.html') unless request.websocket?
 
-  get 'ws' do
     request.websocket do |ws|
       ws.onopen do
         $socket_lock.synchronize do
