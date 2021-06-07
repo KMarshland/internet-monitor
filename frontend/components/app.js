@@ -1,6 +1,6 @@
 import React from 'react';
-import Grapher from '@windborne/grapher'
 import InternetStatusInterface from '../state/internet_status_interface.js';
+import StatusGraph from './status_graph.js';
 
 export default class App extends React.PureComponent {
 
@@ -11,11 +11,11 @@ export default class App extends React.PureComponent {
             currentState: '-',
             lastLatency: null
         };
+
+        this.statusInterface = new InternetStatusInterface();
     }
 
     componentDidMount() {
-        this.statusInterface = new InternetStatusInterface();
-
         this.statusInterface.on('internet_status', ({ internet_status, latency }) => {
             this.setState({ currentState: internet_status, lastLatency: latency });
         });
@@ -34,8 +34,8 @@ export default class App extends React.PureComponent {
                     Internet status: {currentState} { lastLatency && ` / latency: ${lastLatency.toFixed()}`}
                 </h1>
 
-                <Grapher
-                    series={[]}
+                <StatusGraph
+                    statusInterface={this.statusInterface}
                 />
             </div>
         )

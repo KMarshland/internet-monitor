@@ -11,6 +11,7 @@ module.exports = {
         libraryTarget: 'umd'
     },
     mode: 'production',
+    devtool: 'source-map',
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin({ /* additional options here */ })],
@@ -23,8 +24,7 @@ module.exports = {
                 use:['style-loader', 'css-loader', 'sass-loader']
             },
             {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components|build)/,
+                test: /(frontend|grapher).*\.js$/,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -37,6 +37,10 @@ module.exports = {
                 use: [
                     'file-loader',
                 ]
+            },
+            {
+                test: /\.(vert|frag|glsl)$/,
+                use: 'webpack-glsl-loader'
             }
         ]
     },
