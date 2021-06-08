@@ -28,6 +28,14 @@ class App < Sinatra::Base
       end
     end
   end
+
+  get '/historical-data' do
+    send_file File.join('data', 'internet_status.bin')
+  end
+
+  get '/historical-data-index' do
+    send_file File.join('data', 'internet_status_index.bin')
+  end
 end
 
 app_thread = Thread.new do

@@ -10,6 +10,12 @@ module.exports = {
         filename: 'bundle.min.js',
         libraryTarget: 'umd'
     },
+    devServer: {
+        proxy: {
+            '/historical-data': 'http://localhost:4567/historical-data',
+            '/historical-data-index': 'http://localhost:4567'
+        }
+    },
     mode: 'production',
     devtool: 'source-map',
     optimization: {

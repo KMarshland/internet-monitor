@@ -8,19 +8,18 @@ export default class StatusGraph extends React.PureComponent {
         super(props);
 
         this.state = {
-            liveData: Kefir.stream((emitter) => {
+            liveData: Kefir.stream(async (emitter) => {
+                await this.props.statusInterface.emitHistoricalStatus(emitter.emit);
+
                 this.props.statusInterface.on('internet_status', ({ internet_status, latency }) => {
                     if (internet_status === 'offline') {
-                        emitter.emit({
-                            timestamp: new Date(),
-                            latency: null
-                        });
-                    } else {
-                        emitter.emit({
-                            timestamp: new Date(),
-                            latency
-                        });
+                        latency = null;
                     }
+
+                    emitter.emit({
+                        timestamp: new Date(),
+                        latency
+                    });
                 });
             })
         }

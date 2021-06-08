@@ -19,7 +19,7 @@ def monitor
   output_file = File.open('data/internet_status.bin', 'a+b')
 
   File.open('data/internet_status_index.bin', 'a+b') do |index_file|
-    index_file.write [Time.now.to_f].pack('e')
+    index_file.write [Time.now.to_f].pack('E')
     index_file.write [File.size('data/internet_status.bin')].pack('L<')
   end
 
@@ -28,16 +28,14 @@ def monitor
 
     internet_out = line.start_with? 'Request timeout for icmp_seq'
 
-    output_file.write [Time.now.to_f].pack('e')
-
     packet = nil
+    latency = nil
 
     if internet_out
-      output_file.write [-1].pack('e')
+      latency = -1
       packet = { internet_status: 'offline' }
     elsif line =~ /\d+ bytes from 8\.8\.8\.8: icmp_seq=\d+ ttl=\d+ time=(\d+(\.\d+)?) ms/
       latency = line.match(/time=(\d+(\.\d+)?) ms/)[1].to_f
-      output_file.write [latency].pack('e')
 
       if latency < 100
         packet = { internet_status: 'online', latency: latency }
@@ -46,7 +44,11 @@ def monitor
       end
     end
 
-    output_file.flush
+    unless latency.nil?
+      output_file.write([Time.now.to_f].pack('E') + [latency].pack('e'))
+      output_file.flush
+    end
+
     yield packet if block_given? && !packet.nil?
   end
 end
