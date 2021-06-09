@@ -2,6 +2,23 @@ import React from 'react';
 import Kefir from 'kefir';
 import Grapher from '@windborne/grapher/src/grapher.js'
 
+
+const customBoundsSelectors = [
+    {
+        label: '15m',
+        datesOnly: true,
+        calculator: (globalBounds) => {
+            if (!globalBounds.dates) {
+                return;
+            }
+
+            return {
+                minX: Math.max(new Date(globalBounds.maxX).valueOf() - 15*60*1000, globalBounds.minX)
+            };
+        }
+    }
+]
+
 export default class StatusGraph extends React.PureComponent {
 
     constructor(props) {
@@ -43,6 +60,7 @@ export default class StatusGraph extends React.PureComponent {
                     }
                 ]}
                 webgl={true}
+                customBoundsSelectors={customBoundsSelectors}
             />
         )
     }
