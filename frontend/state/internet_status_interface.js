@@ -4,7 +4,7 @@ export default class InternetStatusInterface {
     constructor() {
         this.eventListeners = {};
 
-        this.ws = new WebSocket('ws://localhost:4567');
+        this.ws = new WebSocket(`ws://${window.location.host}`);
         this.ws.onmessage = (message) => {
             const data = JSON.parse(message.data);
             this.emit(data.type, data);
