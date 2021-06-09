@@ -1,0 +1,27 @@
+---
+- hosts: local_pi
+  become: yes
+  become_user: root
+  tags:
+    - provision
+  tasks:
+    - name: update files
+      synchronize:
+        src: ../../
+        dest: /home/pi/internet-monitor
+        delete: yes
+        rsync_opts:
+          - "--exclude=data/*.bin"
+    - name: chown internet-monitor
+      command: chown -R pi:pi /home/pi/internet-monitor
+    - name: Copy systemd service file
+      copy:
+        src: internet_monitor.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+    - name: Restart service
+      systemd:
+        name: internet_monitor
+        state: restarted
+        enabled: yes

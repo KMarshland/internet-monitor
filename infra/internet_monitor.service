@@ -1,0 +1,15 @@
+[Unit]
+Description="Internet status monitoring"
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+RuntimeMaxSec=86400
+User=pi
+WorkingDirectory=/home/pi/internet-monitor
+ExecStart=/home/pi/.rbenv/shims/ruby serve.rb
+
+[Install]
+WantedBy=multi-user.target

@@ -10,6 +10,7 @@ $socket_lock = Mutex.new
 class App < Sinatra::Base
   set :public_folder, 'build'
   set :server, 'thin'
+  set :bind, '0.0.0.0'
 
   get '/' do
     next send_file File.join('build', 'index.html') unless request.websocket?

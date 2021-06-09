@@ -1,0 +1,7 @@
+all:
+  children:
+    local_pi:
+      hosts:
+        raspberrypi.local
+      vars:
+        ansible_user: pi
