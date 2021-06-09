@@ -9,14 +9,24 @@ export default class InternetStatusInterface {
     }
 
     createWS() {
+        if (this.ws) {
+            this.ws.close();
+        }
+
         this.ws = new WebSocket(`ws://${window.location.host}`);
         this.ws.onmessage = (message) => {
             const data = JSON.parse(message.data);
             this.emit(data.type, data);
+
+            clearTimeout(this.heartbeatTimeout);
+            this.heartbeatTimeout = setTimeout(() => {
+                this.createWS();
+            }, 10*1000);
         };
 
         this.ws.onclose = () => {
             setTimeout(() => {
+                this.ws = null;
                 this.createWS();
             }, Math.random() * 100);
         }
