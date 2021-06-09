@@ -61,6 +61,7 @@ export default class StatusGraph extends React.PureComponent {
                 ]}
                 webgl={true}
                 customBoundsSelectors={customBoundsSelectors}
+                defaultBoundsCalculator="15m"
             />
         )
     }
