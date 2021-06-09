@@ -35,7 +35,11 @@ export default class StatusGraph extends React.PureComponent {
                         data: liveData,
                         xKey: 'timestamp',
                         yKey: 'latency',
-                        expandYWith: [0]
+                        expandYWith: [0],
+                        background: {
+                            null: 'rgba(255, 0, 0, 0.4)',
+                            '>= 100': 'rgba(201, 111, 15, 0.4)',
+                        }
                     }
                 ]}
                 webgl={true}
