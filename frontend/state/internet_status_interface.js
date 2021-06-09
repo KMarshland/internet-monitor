@@ -4,13 +4,22 @@ export default class InternetStatusInterface {
     constructor() {
         this.eventListeners = {};
 
+        this.createWS();
+        this.historicalDataPromise = this.fetchHistoricalStatus();
+    }
+
+    createWS() {
         this.ws = new WebSocket(`ws://${window.location.host}`);
         this.ws.onmessage = (message) => {
             const data = JSON.parse(message.data);
             this.emit(data.type, data);
         };
 
-        this.historicalDataPromise = this.fetchHistoricalStatus();
+        this.ws.onclose = () => {
+            setTimeout(() => {
+                this.createWS();
+            }, Math.random() * 100);
+        }
     }
 
     async fetchHistoricalStatus() {
