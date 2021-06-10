@@ -9,3 +9,13 @@ body {
 .text-center {
   text-align: center;
 }
+
+.status-summary {
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 10px;
+
+  h1, h2 {
+    margin: 5px 0;
+  }
+}

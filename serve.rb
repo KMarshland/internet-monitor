@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sinatra/base'
 require 'sinatra-websocket'
+require 'sinatra/cross_origin'
 
 require_relative 'monitor'
 
@@ -11,6 +12,14 @@ class App < Sinatra::Base
   set :public_folder, 'build'
   set :server, 'thin'
   set :bind, '0.0.0.0'
+
+  configure do
+    enable :cross_origin
+  end
+
+  before do
+    response.headers['Access-Control-Allow-Origin'] = '*'
+  end
 
   get '/' do
     next send_file File.join('build', 'index.html') unless request.websocket?

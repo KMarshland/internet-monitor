@@ -14,6 +14,10 @@
           - "--exclude=data/*.bin"
     - name: chown internet-monitor
       command: chown -R pi:pi /home/pi/internet-monitor
+    - name: bundle install
+      command: /home/pi/.rbenv/shims/bundle install
+      args:
+        chdir: /home/pi/internet-monitor
     - name: Copy systemd service file
       copy:
         src: internet_monitor.service

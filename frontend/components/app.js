@@ -1,6 +1,9 @@
 import React from 'react';
 import InternetStatusInterface from '../state/internet_status_interface.js';
 import StatusGraph from './status_graph.js';
+import StatusSummary from './status_summary.js';
+import CurrentStatus from './current_status.js';
+import StatusSummaryGraph from './status_summary_graph.js';
 
 export default class App extends React.PureComponent {
 
@@ -9,7 +12,8 @@ export default class App extends React.PureComponent {
 
         this.state = {
             currentState: '-',
-            lastLatency: null
+            lastLatency: null,
+            discretizedData: null
         };
 
         this.statusInterface = new InternetStatusInterface();
@@ -19,6 +23,8 @@ export default class App extends React.PureComponent {
         this.statusInterface.on('internet_status', ({ internet_status, latency }) => {
             this.setState({ currentState: internet_status, lastLatency: latency });
         });
+
+        this.statusInterface.getDiscretizedData().then((discretizedData) => this.setState({ discretizedData }));
     }
 
     componentWillUnmount() {
@@ -26,17 +32,27 @@ export default class App extends React.PureComponent {
     }
 
     render() {
-        const { currentState, lastLatency } = this.state;
+        const { discretizedData } = this.state;
 
         return (
             <div>
-                <h1 className="text-center">
-                    Internet status: {currentState} { lastLatency && ` / latency: ${lastLatency.toFixed()}`}
-                </h1>
+                <CurrentStatus
+                    statusInterface={this.statusInterface}
+                />
 
                 <StatusGraph
                     statusInterface={this.statusInterface}
                 />
+
+                {
+                    discretizedData &&
+                    <StatusSummary discretizedData={discretizedData} />
+                }
+
+                {
+                    discretizedData &&
+                    <StatusSummaryGraph discretizedData={discretizedData} />
+                }
             </div>
         )
     }
